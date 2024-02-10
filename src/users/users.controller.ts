@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Inject,
   Param,
   Patch,
   Post,
@@ -13,7 +14,10 @@ import { UsersService } from './users.service'
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    @Inject('MyConfigModule') private readonly myConfigModule: any,
+  ) {}
 
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
@@ -22,6 +26,7 @@ export class UsersController {
 
   @Get()
   findAll() {
+    return this.myConfigModule
     return this.usersService.findAll()
   }
 
