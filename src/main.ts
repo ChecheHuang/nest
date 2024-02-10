@@ -1,12 +1,16 @@
 import { ConfigService } from '@nestjs/config'
-import { NestFactory } from '@nestjs/core'
+import { NestApplication, NestFactory } from '@nestjs/core'
 import * as chalk from 'chalk'
 import { networkInterfaces } from 'os'
+import { join } from 'path'
 import { AppModule } from './app.module'
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule)
+  const app = await NestFactory.create<NestApplication>(AppModule)
   const configService = app.get(ConfigService)
+  app.useStaticAssets(join(__dirname, 'images'), {
+    prefix: '/images',
+  })
   const port = Number(configService.get<number>('PORT')) || 3000
   await app.listen(port)
   const interfaces = networkInterfaces()
