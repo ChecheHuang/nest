@@ -3,9 +3,13 @@ import {
   Controller,
   Delete,
   Get,
+  Headers,
+  HttpCode,
   Param,
   Patch,
   Post,
+  Query,
+  Request,
 } from '@nestjs/common'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
@@ -16,17 +20,23 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
+  create(@Body('name') createUserDto: CreateUserDto) {
+    console.log(createUserDto)
     return this.usersService.create(createUserDto)
   }
 
   @Get()
-  findAll() {
+  @HttpCode(202)
+  findAll(@Request() req, @Query() query, @Headers() headers) {
+    console.log(req.query)
+    console.log(query)
+    console.log(headers)
     return this.usersService.findAll()
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
+    console.log(id)
     return this.usersService.findOne(+id)
   }
 
