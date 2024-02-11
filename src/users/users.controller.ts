@@ -7,12 +7,12 @@ import {
   Patch,
   Post,
   UseGuards,
-  SetMetadata,
 } from '@nestjs/common'
 import { GuardGuard } from 'src/guard/guard.guard'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { UsersService } from './users.service'
+import { ReqUrl, Role } from 'src/role/role.decorator'
 
 @Controller('users')
 @UseGuards(GuardGuard)
@@ -25,8 +25,9 @@ export class UsersController {
   }
 
   @Get()
-  @SetMetadata('role', ['admin'])
-  findAll() {
+  @Role('admin')
+  findAll(@ReqUrl('data') url: string) {
+    console.log(url)
     return this.usersService.findAll()
   }
 
