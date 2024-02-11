@@ -1,11 +1,29 @@
 import { ConfigService } from '@nestjs/config'
 import { NestFactory } from '@nestjs/core'
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import * as chalk from 'chalk'
 import { networkInterfaces } from 'os'
 import { AppModule } from './app.module'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
+  const options = new DocumentBuilder()
+    .addBearerAuth({
+      type: 'http',
+      scheme: 'bearer',
+      bearerFormat: 'JWT',
+      in: 'header',
+      name: 'Authorization',
+      description: 'Enter JWT token',
+    })
+    .setTitle('demo')
+    .setDescription('The demo API description')
+    .setVersion('1.0')
+    .addTag('demo')
+    .build()
+  const document = SwaggerModule.createDocument(app, options)
+  SwaggerModule.setup('api-docs', app, document)
+
   const configService = app.get(ConfigService)
   const port = Number(configService.get<number>('PORT')) || 3000
   await app.listen(port)
@@ -15,6 +33,7 @@ async function bootstrap() {
     .filter((iface) => iface.family === 'IPv4' && !iface.internal)
     .map((iface) => iface.address)
   const SERVER_ADDRESS = `http://${addresses[0]}:${port}`
-  console.log(chalk.yellowBright(`😼[server] :${SERVER_ADDRESS}`))
+  console.log(chalk.yellowBright(`😼[server]  :${SERVER_ADDRESS}`))
+  console.log(chalk.yellowBright(`🔥[swagger] :${SERVER_ADDRESS}/api-docs`))
 }
 bootstrap()
