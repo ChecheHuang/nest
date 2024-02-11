@@ -2,10 +2,13 @@ import { ConfigService } from '@nestjs/config'
 import { NestFactory } from '@nestjs/core'
 import * as chalk from 'chalk'
 import { networkInterfaces } from 'os'
+import { GuardGuard } from 'src/guard/guard.guard'
 import { AppModule } from './app.module'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
+  // app.useGlobalGuards(new GuardGuard())
+
   const configService = app.get(ConfigService)
   const port = Number(configService.get<number>('PORT')) || 3000
   await app.listen(port)

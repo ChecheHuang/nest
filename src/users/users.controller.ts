@@ -6,12 +6,16 @@ import {
   Param,
   Patch,
   Post,
+  UseGuards,
+  SetMetadata,
 } from '@nestjs/common'
+import { GuardGuard } from 'src/guard/guard.guard'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { UsersService } from './users.service'
 
 @Controller('users')
+@UseGuards(GuardGuard)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
@@ -21,6 +25,7 @@ export class UsersController {
   }
 
   @Get()
+  @SetMetadata('role', ['admin'])
   findAll() {
     return this.usersService.findAll()
   }
