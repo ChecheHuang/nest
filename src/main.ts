@@ -3,9 +3,14 @@ import { NestFactory } from '@nestjs/core'
 import * as chalk from 'chalk'
 import { networkInterfaces } from 'os'
 import { AppModule } from './app.module'
+import { HttpFilter } from './common/filter'
+import { Response as CommonResponse } from './common/response'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
+
+  app.useGlobalFilters(new HttpFilter())
+  app.useGlobalInterceptors(new CommonResponse())
   const configService = app.get(ConfigService)
   const port = Number(configService.get<number>('PORT')) || 3000
   await app.listen(port)
