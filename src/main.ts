@@ -3,11 +3,13 @@ import { NestFactory } from '@nestjs/core'
 import * as chalk from 'chalk'
 import { networkInterfaces } from 'os'
 import { AppModule } from './app.module'
+import { ZodFilter } from './zodFilter'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
   const configService = app.get(ConfigService)
   const port = Number(configService.get<number>('PORT')) || 3000
+  app.useGlobalFilters(new ZodFilter())
   await app.listen(port)
   const interfaces = networkInterfaces()
   const addresses = Object.values(interfaces)

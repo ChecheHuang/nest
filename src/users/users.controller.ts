@@ -6,10 +6,13 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { UsersService } from './users.service'
+import { z } from 'zod'
+import { ZodPipe } from './users.pipe'
 
 @Controller('users')
 export class UsersController {
@@ -21,7 +24,17 @@ export class UsersController {
   }
 
   @Get()
-  findAll() {
+  findAll(
+    @Query(
+      new ZodPipe(
+        z.object({
+          name: z.string(),
+        }),
+      ),
+    )
+    query,
+  ) {
+    console.log(query)
     return this.usersService.findAll()
   }
 
